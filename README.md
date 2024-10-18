@@ -4,7 +4,7 @@ This pattern was inspired by [Game Programming Patterns](https://gameprogramming
 
 ## When To Use
 
-This pattern works well paired with the [Singleton pattern](https://github.com/RichardLions/singleton-pattern). Although this pattern improves upon a pure Single pattern by creating an abstraction to improves testability, easily switch implementations and additional options to manage service lifetime it should be used when no practical alternatives are available. For example in most situations standard dependency injection through a constructor should be preferred.
+This pattern works well paired with the [Singleton pattern](https://github.com/RichardLions/singleton-pattern). Although this pattern improves upon a pure Singleton pattern by creating an abstraction to improve testability, easily switch implementations and additional options to manage service lifetime it should be used when no practical alternatives are available. For example in most situations standard dependency injection through a constructor should be preferred to clearing define dependencies.
 
 However an alternative Service Locator implementation could be to abstract the Service Locator as well and pass that through dependency injection. This would be useful for when the service itself may change at runtime and cannot be cached. Accessing the service via an abstract Service Locator would solve this problem while also strongly defining dependencies.
 
@@ -27,7 +27,7 @@ public:
     virtual void Operation() = 0;
 };
 
-class ServiceNullDerived final : public Service
+class ServiceNull final : public Service
 {
 public:
     void Operation() override {}
@@ -46,11 +46,11 @@ public:
         return m_Service;
     }
 private:
-    static ServiceNullDerived m_NullService;
+    static ServiceNull m_NullService;
     static Service* m_Service;
 };
 
-ServiceNullDerived ServiceLocator::m_NullService{};
+ServiceNull ServiceLocator::m_NullService{};
 Service* ServiceLocator::m_Service{&m_NullService};
 
 class ServiceImplementation final : public Service
@@ -65,7 +65,7 @@ public:
 {
     ServiceLocator::GetService()->Operation(); // Calls null service
 
-    ServiceLocator::SetService(CreateServiceDerived());
+    ServiceLocator::SetService(CreateServiceImplementation());
     ServiceLocator::GetService()->Operation(); // Calls ServiceImplementation
 }
 ```
